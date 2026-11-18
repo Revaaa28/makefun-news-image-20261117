@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Compose the entry image for make.fun news-image-20261117.
 
-A one-page broadsheet summing up Tuesday 17 November 2026: one hero
-story, three pictured panels, six grid stories and an "also today" strip.
-Every letter is rendered by code (DejaVu); every illustration is drawn
-with PIL shapes in this file. No photos, no copied artwork.
+A one-page broadsheet summing up Tuesday 17 November 2026: a dotted
+world map with numbered story pins, one hero story, three pictured
+panels and nine one-line briefs. Every letter is rendered by code
+(DejaVu); every illustration is drawn with PIL shapes in this file.
+No photos, no copied artwork.
 
 Run: python3 compose.py  -> writes entry.png next to this file.
 """
@@ -287,8 +288,7 @@ LEAD = {
     "kicker": "EUROPE  ·  WAR",
     "headline": "Kyiv hits the Crimea bridge again",
     "summary": ("Ukraine struck the Kerch bridge for a second day running, "
-                "severely damaging the span, Kyiv says. Russia answered "
-                "with strikes on Kyiv's river crossings."),
+                "severely damaging the span, Kyiv says."),
     "scene": "bridge",
 }
 
@@ -307,36 +307,83 @@ PANELS = [
      "scene": "yemen"},
 ]
 
-GRID = [
-    {"kicker": "ASIA-PACIFIC  ·  DEFENCE", "headline": "Japan scrambles jets as Russian planes enter its airspace",
-     "summary": ("Two suspected Russian aircraft entered Japanese airspace "
-                  "early today, Tokyo says; it protested."),
-     "scene": "jet"},
-    {"kicker": "ASIA-PACIFIC  ·  TRADE", "headline": "Xi and Carney agree deeper tariff cuts",
-     "summary": ("China and Canada pledge further tariff cuts and closer "
-                  "ties, their leaders agree in talks today."),
-     "scene": "flags"},
-    {"kicker": "TECHNOLOGY  ·  TRADE", "headline": "US tightens AI-chip sales to Southeast Asia",
-     "summary": ("Washington curbs advanced-chip sales to regional data "
-                  "centres; Singapore seeks trusted access."),
-     "scene": "chip"},
-    {"kicker": "UNITED STATES  ·  LAW", "headline": "Expert: Epstein death was homicide, not suicide",
-     "summary": ("A forensic review of the medical examiner's file concludes "
-                  "Jeffrey Epstein was murdered in prison."),
-     "scene": "magnifier"},
-    {"kicker": "ASIA  ·  DISASTER", "headline": "Bus plunges into ravine in Uttarakhand",
-     "summary": ("At least six dead and 20 hurt after a bus falls into a "
-                  "gorge in Tehri Garhwal, reports say."),
-     "scene": "bus"},
-    {"kicker": "EUROPE  ·  MIDDLE EAST", "headline": "Britain sanctions settlement builders",
-     "summary": ("Britain sanctions eight firms building West Bank "
-                  "settlements, and a group blocking aid to Gaza."),
-     "scene": "stamp"},
+BRIEFS = [
+    {"num": 5, "place": "JAPAN",
+     "text": "Jets scrambled as two suspected Russian aircraft enter Japanese airspace; Tokyo protests."},
+    {"num": 6, "place": "CHINA–CANADA",
+     "text": "Xi and Carney pledge further tariff cuts and closer ties in leaders' talks today."},
+    {"num": 7, "place": "SOUTHEAST ASIA",
+     "text": "US tightens AI-chip sales to regional data centres; Singapore seeks trusted access."},
+    {"num": 8, "place": "UNITED STATES",
+     "text": "Forensic expert concludes Epstein's prison death was homicide, not suicide."},
+    {"num": 9, "place": "INDIA",
+     "text": "Bus plunges into a ravine in Uttarakhand; at least six dead and 20 hurt."},
+    {"num": 10, "place": "BRITAIN",
+     "text": "London sanctions eight firms building West Bank settlements, and a group blocking aid to Gaza."},
+    {"num": 11, "place": "GAZA",
+     "text": "UK, Australia, Canada and Italy press Israel to open crossings for aid."},
+    {"num": 12, "place": "JERICHO",
+     "text": "Israeli settlers kill a 72-year-old woman, Palestinians say."},
+    {"num": 13, "place": "KYIV",
+     "text": "Russia answers the bridge strike with attacks on the capital's river crossings."},
 ]
 
-ALSO = ("ALSO TODAY —  UK, Australia, Canada and Italy press Israel to open Gaza "
-        "crossings for aid  •  Israeli settlers kill a 72-year-old woman in "
-        "Jericho, Palestinians say")
+# ------------------------------------------------------------- world map
+# Dotted world map: a 72 x 28 ASCII landmask, '#' is land, '.' is sea.
+# Equirectangular: column c spans longitude -180+5c .. -175+5c; row r
+# spans latitude 82-5.07r .. 82-5.07(r+1). Continents are drawn a touch
+# tall to offset the wide, short panel.
+MAP_LAT_TOP, MAP_LAT_BOT = 82.0, -60.0
+LANDMASK = [
+    "............" "......###..." "...####....." ".##......##." "......##...." "............",
+    "............" "..###.####.." "..######...." ".##.......##" "##...#####.." "........##..",
+    "########..##" "#########..." ".######....." "..##########" "############" "###########.",
+    "########.###" "#####...####" "..####..##.." ".###########" "############" "############",
+    "..##########" "######..####" "#..##......#" ".###########" "############" "##########..",
+    "..........##" "#####..#####" "##........##" "############" "############" "#######.....",
+    ".........###" "############" "#.........##" "############" "############" "####........",
+    "..........##" "###########." ".........###" "##########.." "############" "####........",
+    "..........##" "##########.." ".........###" "#######.####" "############" "###.........",
+    "..........##" "#########..." "........####" "############" "##########.#" ".##.........",
+    "..........##" "###....##..." "........####" "############" "############" "............",
+    "..........##" "##.........." "........####" "###########." ".####.####.#" "#...........",
+    "..........##" "#..........." "........####" "###.#####..." "..###.####.#" "#...........",
+    "............" "........###." "........####" "##########.." "..##..####.." "#...........",
+    "............" ".......#####" "###.......##" "##########.." "......#....." "............",
+    "............" ".......#####" "##.........#" "########...." ".....#######" ".#####......",
+    "............" ".......#####" "##.........." "########...." ".....######." ".######.....",
+    "............" "......######" "#..........." "########...." ".......###.#" "#.#####.....",
+    "............" "......######" "#..........." "##########.." "..........##" "##.###......",
+    "............" ".......#####" "###........." "##########.." ".........###" "######......",
+    "............" "........####" "##.........." ".####...##.." ".........###" "######......",
+    "............" "........####" "............" ".###........" "..........##" "#####.......",
+    "............" "........####" "............" "............" "............" ".####.....##",
+    "............" "........###." "............" "............" "............" ".........###",
+    "............" "........##.." "............" "............" "............" "........###.",
+    "............" "........##.." "............" "............" "............" "............",
+    "............" "........##.." "............" "............" "............" "............",
+    "............" "........##.." "............" "............" "............" "............",
+]
+
+# Story pins: num, story lon/lat, label lon/lat. The label sits on the
+# story unless it is a callout — the three Levant stories (3, 11, 12)
+# share one dot, so their labels fan out around it with leader lines,
+# and pin 1 labels east so it clears Kyiv (13) and the Levant fan.
+PINS = [
+    (1, 36.5, 45.2, 44.0, 48.0),      # Kerch bridge, Crimea — callout east
+    (2, 50.6, 26.2, 50.6, 26.2),      # Bahrain
+    (3, 35.2, 31.8, 28.5, 36.5),      # Israel — callout west
+    (4, 45.0, 12.8, 45.0, 12.8),      # Aden, Yemen
+    (5, 140.0, 40.0, 140.0, 40.0),    # Japan
+    (6, 116.4, 39.9, 116.4, 39.9),    # Beijing
+    (7, 103.8, 1.4, 103.8, 1.4),      # Singapore
+    (8, -74.0, 40.7, -74.0, 40.7),    # New York
+    (9, 79.0, 30.3, 79.0, 30.3),      # Uttarakhand, India
+    (10, -0.1, 51.5, -0.1, 51.5),     # London
+    (11, 34.3, 31.4, 24.5, 25.5),     # Gaza — callout south-west
+    (12, 35.5, 31.9, 52.0, 44.0),     # Jericho — callout east
+    (13, 30.5, 50.4, 30.5, 50.4),     # Kyiv
+]
 
 
 def kicker_chip(d, x, y, text, fnt):
@@ -346,7 +393,8 @@ def kicker_chip(d, x, y, text, fnt):
     return tw + 12
 
 
-def story_cell(d, x, y, w, h, story, head_size, sum_size, art_h, art=True):
+def story_cell(d, x, y, w, h, story, head_size, sum_size, art_h, art=True,
+               num=None):
     """One story: optional illustration strip, kicker chip, headline, summary."""
     ty = y
     if art:
@@ -354,7 +402,11 @@ def story_cell(d, x, y, w, h, story, head_size, sum_size, art_h, art=True):
         d.rectangle([x, y + art_h, x + w, y + art_h + 2], fill=RULE)
         ty = y + art_h + 10
     kf = font(SANS_B, 11)
-    kicker_chip(d, x, ty, story["kicker"], kf)
+    if num is not None:
+        num_badge(d, x + 9, ty + 10, num, 9)
+        kicker_chip(d, x + 24, ty, story["kicker"], kf)
+    else:
+        kicker_chip(d, x, ty, story["kicker"], kf)
     ty += 26
     hf = font(SERIF, head_size)
     lines = wrap(d, story["headline"], hf, w - 4)
@@ -363,6 +415,69 @@ def story_cell(d, x, y, w, h, story, head_size, sum_size, art_h, art=True):
     sf = font(SANS, sum_size)
     lines = wrap(d, story["summary"], sf, w - 4)
     draw_text_block(d, x, ty, w - 4, lines, sf, (52, 50, 46))
+
+
+def num_badge(d, cx, cy, num, r):
+    """A red pin/badge: filled circle, white ring, white number."""
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=RED,
+              outline=(255, 255, 255), width=2)
+    f = font(SANS_B, 11 if num < 10 else 10)
+    d.text((cx, cy), str(num), font=f, fill=(255, 255, 255), anchor="mm")
+
+
+def map_xy(x0, y0, w, h, lon, lat):
+    """Equirectangular projection onto the map panel."""
+    fx = (lon + 180.0) / 360.0
+    fy = (MAP_LAT_TOP - lat) / (MAP_LAT_TOP - MAP_LAT_BOT)
+    return x0 + fx * w, y0 + fy * h
+
+
+def draw_map(d, x0, y0, w, h):
+    """Dotted continents from LANDMASK, then the numbered story pins."""
+    cols, rows = 72, 28
+    dx, dy = w / cols, h / rows
+    r = 3.1
+    for ri, row in enumerate(LANDMASK):
+        for ci, ch in enumerate(row):
+            if ch == "#":
+                cx, cy = x0 + (ci + 0.5) * dx, y0 + (ri + 0.5) * dy
+                d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=NAVY)
+    for num, lon, lat, llon, llat in PINS:
+        tx, ty = map_xy(x0, y0, w, h, lon, lat)
+        if (llon, llat) != (lon, lat):
+            lx, ly = map_xy(x0, y0, w, h, llon, llat)
+            d.line([lx, ly, tx, ty], fill=RED, width=1)
+            d.ellipse([tx - 3.5, ty - 3.5, tx + 3.5, ty + 3.5], fill=RED)
+            num_badge(d, lx, ly, num, 9)
+        else:
+            num_badge(d, tx, ty, num, 9)
+
+
+def draw_brief(d, x, y, w, brief):
+    """One brief: red number, bold place name, one-liner wrapped under it."""
+    nf = font(SANS_B, 12)
+    pf = font(SANS_B, 12)
+    tf = font(SANS, 12)
+    head = f"{brief['num']}."
+    d.text((x, y), head, font=nf, fill=RED)
+    hx = x + d.textlength(head, font=nf) + 5
+    d.text((hx, y), brief["place"], font=pf, fill=INK)
+    px = hx + d.textlength(brief["place"], font=pf) + 5
+    words = brief["text"].split()
+    lines, cur, avail = [], "", w - (px - x)
+    for word in words:
+        trial = (cur + " " + word).strip()
+        if d.textlength(trial, font=tf) <= avail:
+            cur = trial
+        else:
+            if cur:
+                lines.append(cur)
+            cur, avail = word, w - int(d.textlength(head, font=nf)) - 5
+    if cur:
+        lines.append(cur)
+    for i, line in enumerate(lines[:3]):
+        lx = px if i == 0 else hx
+        d.text((lx, y + i * 15), line, font=tf, fill=(52, 50, 46))
 
 
 def main():
@@ -387,54 +502,61 @@ def main():
     d.rectangle([M, 144, W - M, 147], fill=INK)
     d.rectangle([M, 150, W - M, 152], fill=INK)
 
+    # ---- world map band: dotted continents, numbered pins per story
+    mh_f = font(SANS_B, 15)
+    d.text((M, 162), "THE DAY ON THE MAP", font=mh_f, fill=NAVY)
+    note_f = font(SANS, 11)
+    note = "Red pins mark where each story happened — numbers match the stories below."
+    nw = d.textlength(note, font=note_f)
+    d.text((W - M - nw, 165), note, font=note_f, fill=GREY)
+    map_y, map_h = 188, 216
+    d.rectangle([M, map_y, W - M, map_y + map_h], fill=(233, 238, 243))
+    d.rectangle([M, map_y, W - M, map_y + map_h], outline=RULE, width=1)
+    draw_map(d, M, map_y, W - 2 * M, map_h)
+    d.rectangle([M, map_y + map_h + 8, W - M, map_y + map_h + 10], fill=INK)
+
     # ---- hero lead story
-    hy, hh = 162, 178
-    SCENES[LEAD["scene"]](d, M, hy, 400, hh)
-    d.rectangle([M, hy, M + 400, hy + hh], outline=RULE, width=2)
-    tx = M + 420
+    hy, hh = 420, 128
+    SCENES[LEAD["scene"]](d, M, hy, 300, hh)
+    d.rectangle([M, hy, M + 300, hy + hh], outline=RULE, width=2)
+    tx = M + 318
     tw_ = W - M - tx
     kf = font(SANS_B, 13)
-    kicker_chip(d, tx, hy + 6, LEAD["kicker"], kf)
-    hf = font(SERIF, 32)
+    num_badge(d, tx + 10, hy + 16, 1, 10)
+    kicker_chip(d, tx + 26, hy + 6, LEAD["kicker"], kf)
+    hf = font(SERIF, 27)
     lines = wrap(d, LEAD["headline"], hf, tw_)
     ty = draw_text_block(d, tx, hy + 40, tw_, lines, hf, INK)
-    sf = font(SANS, 16)
+    sf = font(SANS, 14)
     lines = wrap(d, LEAD["summary"], sf, tw_)
     draw_text_block(d, tx, ty + 10, tw_, lines, sf, (52, 50, 46))
     d.rectangle([M, hy + hh + 10, W - M, hy + hh + 12], fill=INK)
 
     # ---- three pictured panels
-    py, ph = 356, 226
+    py, ph = 566, 190
     pw = (W - 2 * M - 2 * 16) // 3
     for i, story in enumerate(PANELS):
         px = M + i * (pw + 16)
-        story_cell(d, px, py, pw, ph, story, 19, 13, 98)
+        story_cell(d, px, py, pw, ph, story, 17, 12, 64, num=i + 2)
         if i < 2:
             d.line([px + pw + 8, py, px + pw + 8, py + ph], fill=RULE, width=1)
-    d.rectangle([M, py + ph + 8, W - M, py + ph + 10], fill=INK)
+    d.rectangle([M, py + ph + 6, W - M, py + ph + 8], fill=INK)
 
-    # ---- six grid stories, 3 x 2
-    gy = 602
-    gh = 162
-    gw = (W - 2 * M - 2 * 16) // 3
-    for i, story in enumerate(GRID):
-        row, col = divmod(i, 3)
-        gx = M + col * (gw + 16)
-        gyi = gy + row * (gh + 8)
-        story_cell(d, gx, gyi, gw, gh, story, 15, 12, 48)
-        if col < 2:
-            d.line([gx + gw + 8, gyi, gx + gw + 8, gyi + gh], fill=RULE, width=1)
-    d.rectangle([M, gy + 2 * gh + 8 + 6, W - M, gy + 2 * gh + 8 + 8], fill=INK)
+    # ---- around the world in brief: nine one-liners, two columns
+    by = 772
+    bf = font(SANS_B, 16)
+    d.text((M, by), "AROUND THE WORLD IN BRIEF", font=bf, fill=INK)
+    d.rectangle([M, by + 24, W - M, by + 26], fill=RED)
+    col_w = (W - 2 * M - 16) // 2
+    rows_y = by + 38
+    for i, brief in enumerate(BRIEFS):
+        col = 0 if i < 5 else 1
+        row = i if i < 5 else i - 5
+        bx = M + col * (col_w + 16)
+        draw_brief(d, bx, rows_y + row * 36, col_w, brief)
 
-    # ---- also-today strip + footer
-    fy = 948
-    af = font(SANS_B, 13)
-    lines = wrap(d, ALSO, af, W - 2 * M)
-    ty = fy
-    for line in lines:
-        d.text((M, ty), line, font=af, fill=INK)
-        ty += 17
-    foot_f = font(SANS, 11)
+    # ---- footer
+    foot_f = font(SANS, 10)
     foot = "Sources: Reuters, AP, AFP, Al Jazeera, Just Security  •  make.fun news-image-20261117"
     fw = d.textlength(foot, font=foot_f)
     d.text(((W - fw) / 2, 996), foot, font=foot_f, fill=GREY)
